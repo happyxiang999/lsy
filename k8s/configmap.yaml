@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: items-api-config
+  labels:
+    app: items-api
+data:
+  items-api.yaml: |
+    Name: items-api
+    Host: 0.0.0.0
+    Port: 8888
+    Mode: prod
+    Log:
+      Mode: console

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: items-api
+  labels:
+    app: items-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: items-api
+  template:
+    metadata:
+      labels:
+        app: items-api
+    spec:
+      containers:
+        - name: items-api
+          image: items-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8888
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8888
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8888
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: config
+              mountPath: /app/etc
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: items-api-config
